@@ -32,7 +32,8 @@ enum MODE {
 
 void changeMode() {
   switch (currentMode) {
-    case modeSteady: currentMode = modeSpin; break;
+    case modeSteady: currentMode = modeBreath; break;
+    case modeBreath: currentMode = modeSpin; break;
     case modeSpin: currentMode = modeRainbowCycle; break;
     case modeRainbowCycle: currentMode = modeSteady; break;
   }
@@ -127,6 +128,7 @@ void loop() {
     }
   } else {
     switch (currentMode) {
+      case modeBreath: breath(); break;
       case modeRainbowCycle: rainbowCycle(); break;
       case modeSpin: spin(); break;
       default: break;
@@ -145,6 +147,26 @@ bool canAct(uint8_t interval) {
   return false;
 }
 
+void breath() {
+  if (!canAct(15)) return;
+
+  
+  if (currentBrightness <= MIN_BRIGHTNESS) {
+    state = 0;
+  } 
+  if (currentBrightness >= MAX_BRIGHTNESS) {
+    state = 1;
+  }
+
+  if (state == 1) {
+    currentBrightness--;
+  } else {
+    currentBrightness++;
+  }
+  
+  pixels.setBrightness(currentBrightness);
+  setAllPixels(currentColor);
+}
 
 uint32_t Wheel(byte WheelPos) {
   WheelPos = 255 - WheelPos;
